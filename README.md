@@ -24,4 +24,23 @@ Usage:
     Customize team names and logos as needed.
     Start scoring live matches and enjoy real-time updates!
 
+Instructions:
+
+    Clone the repository to your local machine.
+    Navigate to the project directory.
+    Run npm install to install dependencies.
+    Run npm start to start the server.
+    Open http://localhost:3000/index-vball.html in your web browser for volleyball control or http://localhost:3000/index.html for basketball control.
+    Add the URL http://localhost:3000/basketball.html or http://localhost:3000/volleyball.html as a browser source in OBS to display the basketball/volleyball scoreboard during live streams.
+
+Basketball:
+![image](https://github.com/esurenajames/scoreboard/assets/152574530/9caeffdd-57ac-4a9f-8678-e4cfc9442ada)
+![image](https://github.com/esurenajames/scoreboard/assets/152574530/db26fcc4-43d7-4fb2-b4d0-16d8a4a81ff7)
+
+Volleyball
+![image](https://github.com/esurenajames/scoreboard/assets/152574530/ab592de1-e2c1-4c4b-9c60-0e9f6aa04f67)
+![image](https://github.com/esurenajames/scoreboard/assets/152574530/eae290a3-8a7a-4816-9aef-3a246f232a84)
+
 Feel free to contribute to this project by submitting pull requests or opening issues for feature requests and bug reports.
+
+
