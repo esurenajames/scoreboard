@@ -1,0 +1,127 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="scoreboard">
+    <div class="team team-a houston">
+       <div class="team-logo">
+          <img id="team1Logo" src="" width="50px" height="50px"/>
+       </div>
+       <div class="team-detail">
+          <div class="team-nameandscore">
+             <div class="team-name">
+                <span class="playerNameText" id="team1NameText">SE</span>
+             </div>
+             <div class="team-score">
+                <span class="playerScoreText" id="team1ScoreText">0</span>
+             </div>
+          </div>
+          <div class="team-thisgame">
+             <div class="team-times">
+                TIMEOUTS: <span id="team1TimeoutText">0</span>
+             </div>
+             <div class="team-bonus">
+                FOULS: <span id="team1FoulText">0</span>
+             </div>
+          </div>
+       </div>
+    </div>
+    <div class="team team-b dallas">
+       <div class="team-logo">
+          <img id="team2Logo" src="" width="50px" height="50px"/>
+       </div>
+       <div class="team-detail">
+          <div class="team-nameandscore">
+             <div class="team-name">
+                <span class="playerNameText" id="team2NameText">BSIT</span>
+             </div>
+             <div class="team-score">
+                <span class="playerScoreText" id="team2ScoreText">0</span>
+             </div>
+          </div>
+          <div class="team-thisgame">
+             <div class="team-times">
+                TIMEOUTS: <span id="team2TimeoutText">0</span>
+             </div>
+             <div class="team-bonus">
+                FOULS: <span id="team2FoulText">0</span>
+             </div>
+          </div>
+       </div>
+    </div>
+    <div class="timer">
+       <div class="timer-container">
+           <div class="quarter">
+                <span id="quarterText">3rd</span>
+           </div>
+           <div class="gameclock" style="width: 40px;">
+                <span id="gameclockText">11:45</span>
+           </div>
+           <div class="shotclock">
+                <span id="shotclockText">24</span>
+           </div>
+       </div> 
+    </div>
+    <div class="logo">
+       <img src="logo.jpg"/>
+    </div>
+ </div>
+
+ <script>
+   // Function to load data from the JSON file
+   function loadData() {
+      fetch('/scoreboard_data.json')
+      .then(response => response.json())
+      .then(data => {
+         // Update team 1 data
+         document.getElementById('team1TimeoutText').textContent = data.team1.timeouts;
+         document.getElementById('team1FoulText').textContent = data.team1.fouls;
+         document.getElementById('team1ScoreText').textContent = data.team1.score;
+         document.getElementById('team1NameText').textContent = data.team1.name; // Display team 1 name
+         document.getElementById('team1Logo').src = data.team1.logo; // Set team 1 logo
+
+         // Update team 2 data
+         document.getElementById('team2TimeoutText').textContent = data.team2.timeouts;
+         document.getElementById('team2FoulText').textContent = data.team2.fouls;
+         document.getElementById('team2ScoreText').textContent = data.team2.score;
+         document.getElementById('team2NameText').textContent = data.team2.name; // Display team 2 name
+         document.getElementById('team2Logo').src = data.team2.logo; // Set team 2 logo
+
+         // Update quarter and game clock
+         document.getElementById('quarterText').textContent = getQuarterText(data.quarter); // Display quarter
+         document.getElementById('gameclockText').textContent = data.gameClock; // Display game clock
+      })
+      .catch(error => console.error('Error fetching scoreboard data:', error));
+   }
+
+   // Function to convert quarter number to text
+   function getQuarterText(quarter) {
+        switch(quarter) {
+            case 1:
+                return '1st';
+            case 2:
+                return '2nd';
+            case 3:
+                return '3rd';
+            case 4:
+                return '4th';
+            default:
+                return 'OT' + (quarter - 4);
+        }
+    }
+
+   // Load data when the page loads
+   loadData();
+
+   // Periodically check for updates
+   setInterval(function() {
+       loadData();
+   }, 1000); // Adjust the interval as needed
+</script>
+
+</body>
+</html>

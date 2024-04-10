@@ -1,0 +1,195 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="volleyball.css">
+</head>
+<body>
+
+<div class="scoreboard">
+    <div class="grid-container">
+        <div class="houston">
+            <span class="playerNameText" id="team1NameText" contenteditable="true" onblur="updateTeamName('team1', this.innerText)">BSIT</span>
+        </div>
+        <div class="set-item" id="team1Sets">
+            <span id="team1SetsValue">0</span>
+            <div class="sets-buttons">
+                <button onclick="increaseSets('team1')">+</button>
+                <button onclick="decreaseSets('team1')">-</button>
+            </div>
+        </div>
+        <div class="grid-item" id="team1Points">
+            <span id="team1PointsValue">12</span>
+            <div class="points-buttons">
+                <button onclick="increaseScore('team1', 1)">+</button>
+                <button onclick="decreaseScore('team1')">-</button>
+            </div>
+        </div>
+        <div class="dallas">
+            <span class="playerNameText" id="team2NameText" contenteditable="true" onblur="updateTeamName('team2', this.innerText)">SE</span>
+        </div>
+        <div class="set-item" id="team2Sets">
+            <span id="team2SetsValue">0</span>
+            <div class="sets-buttons">
+                <button onclick="increaseSets('team2')">+</button>
+                <button onclick="decreaseSets('team2')">-</button>
+            </div>
+        </div>
+        <div class="grid-item" id="team2Points">
+            <span id="team2PointsValue">12</span>
+            <div class="points-buttons">
+                <button onclick="increaseScore('team2', 1)">+</button>
+                <button onclick="decreaseScore('team2')">-</button>
+            </div>
+        </div>
+    </div>
+    <div class="reset-button">
+        <button onclick="resetScores()">Reset</button>
+    </div>
+</div>
+
+<script>
+function updateScoreboard(scoreboardData) {
+    // Update team names
+    document.querySelector('.houston > .playerNameText').innerText = scoreboardData.team1.name || 'none';
+    document.querySelector('.dallas > .playerNameText').innerText = scoreboardData.team2.name || 'none';
+
+    // Update points and sets for each team
+    document.getElementById('team1PointsValue').innerText = scoreboardData.team1.points;
+    document.getElementById('team2PointsValue').innerText = scoreboardData.team2.points;
+    document.getElementById('team1SetsValue').innerText = scoreboardData.team1.sets;
+    document.getElementById('team2SetsValue').innerText = scoreboardData.team2.sets;
+}
+
+function updateTeamName(team, newName) {
+    fetch('/volleyball_data.json')
+        .then(response => response.json())
+        .then(scoreboardData => {
+            scoreboardData[team].name = newName;
+            fetch('/volleyball_data', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(scoreboardData)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to update volleyball scoreboard data');
+                }
+                // Reload data after successful update
+                loadData();
+            })
+            .catch(error => {
+                console.error('Error updating volleyball scoreboard data:', error);
+            });
+        })
+        .catch(error => console.error('Error fetching volleyball scoreboard data:', error));
+}
+
+function increaseSets(team) {
+    const setElement = document.getElementById(`${team}SetsValue`);
+    let sets = parseInt(setElement.innerText);
+    sets++;
+    setElement.innerText = sets;
+    saveDataToFile({ team: team, sets: sets });
+}
+
+function decreaseSets(team) {
+    const setElement = document.getElementById(`${team}SetsValue`);
+    let sets = parseInt(setElement.innerText);
+    if (sets > 0) {
+        sets--;
+        setElement.innerText = sets;
+        saveDataToFile({ team: team, sets: sets });
+    }
+}
+
+function increaseScore(team, points) {
+    const pointsElement = document.getElementById(`${team}PointsValue`);
+    let pointsValue = parseInt(pointsElement.innerText);
+    pointsValue += points;
+    pointsElement.innerText = pointsValue;
+    saveDataToFile({ team: team, points: pointsValue });
+}
+
+function decreaseScore(team) {
+    const pointsElement = document.getElementById(`${team}PointsValue`);
+    let pointsValue = parseInt(pointsElement.innerText);
+    if (pointsValue > 0) {
+        pointsValue--;
+        pointsElement.innerText = pointsValue;
+        saveDataToFile({ team: team, points: pointsValue });
+    }
+}
+
+function saveDataToFile(data) {
+    fetch('/volleyball_data.json')
+        .then(response => response.json())
+        .then(scoreboardData => {
+            if (data.team === 'team1') {
+                scoreboardData.team1[data.points !== undefined ? 'points' : 'sets'] = data.points !== undefined ? data.points : data.sets;
+            } else if (data.team === 'team2') {
+                scoreboardData.team2[data.points !== undefined ? 'points' : 'sets'] = data.points !== undefined ? data.points : data.sets;
+            }
+            fetch('/volleyball_data', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(scoreboardData)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to update volleyball scoreboard data');
+                }
+                // Reload data after successful update
+                loadData();
+            })
+            .catch(error => {
+                console.error('Error updating volleyball scoreboard data:', error);
+            });
+        })
+        .catch(error => console.error('Error fetching volleyball scoreboard data:', error));
+}
+
+function resetScores() {
+    const resetData = {
+        team1: { name: 'none', sets: 0, points: 0 },
+        team2: { name: 'none', sets: 0, points: 0 }
+    };
+    fetch('/volleyball_data', {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(resetData)
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Failed to reset volleyball scoreboard data');
+        }
+        // Reload data after successful reset
+        loadData();
+    })
+    .catch(error => {
+        console.error('Error resetting volleyball scoreboard data:', error);
+    });
+}
+
+function loadData() {
+    fetch('/volleyball_data.json')
+        .then(response => response.json())
+        .then(scoreboardData => {
+            // Update scoreboard based on loaded data
+            updateScoreboard(scoreboardData);
+        })
+        .catch(error => console.error('Error fetching volleyball scoreboard data:', error));
+}
+
+loadData();
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,131 @@
+@import url('https://fonts.googleapis.com/css?family=Montserrat');
+
+body {
+  font-family: "Montserrat", "Arial";
+  color: white; 
+  background-color: #444; 
+}
+
+.scoreboard {
+  display: flex;
+  flex-direction:row;
+}
+
+.scoreboard > * {
+  border-top: 1px solid white;
+  border-bottom: 1px solid white; 
+  border-right: 1px solid white; 
+  height: 50px; 
+  font-weight: bold; 
+}
+
+.scoreboard > *:first-child {
+  border-left: 1px solid white;
+}
+
+.team {
+  display: flex;
+  flex-direction: row;
+  color: white; 
+}
+
+.team-detail {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; 
+}
+
+.team-detail {
+  padding: 0em 0.5em; 
+}
+
+.team-times, .team-bonus{
+    font-size: .9em;
+    margin-bottom: 3px; 
+}
+
+.team-detail {
+  font-size: 1.5em; 
+}
+
+.team-detail .team-nameandscore {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between; 
+}
+
+.team-detail .team-thisgame {
+  width: 150px; 
+  font-size: 0.5em; 
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  opacity: 0.8;
+}
+
+.timer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background-color: #222; 
+}
+
+.timer-container {
+  display: flex;
+  flex-direction: row; 
+}
+
+.timer-container > * {
+  border-right: 1px solid white; 
+  padding: 0em 10px; 
+  color: white;
+}
+
+.timer-container > *:last-child {
+  border-right: 0; 
+  color: yellow;
+  width: 30px; /* Set a fixed width */
+}
+
+
+.logo {
+  display: flex;
+  flex-direction: column; 
+  justify-content: center; 
+  padding: 0em 0em; 
+  background-color: black; 
+}
+
+.logo img {
+  height: 100%; /* Maintain aspect ratio */
+}
+
+/* Game */ 
+
+.houston {
+  background-color: crimson;
+}
+
+.dallas {
+  background-color: steelblue; 
+}
+
+.playerScoreText, .playerNameText{
+	margin-top: -10px;
+	font-weight: 600;
+  outline: none;
+}
+
+.btn-timeout-plus, .btn-timeout-minus, .btn-foul-plus, .btn-foul-minus, .btn-score-plus, .btn-score-minus, .btn-quarter-plus, .btn-quarter-minus {
+    cursor: pointer;
+    opacity: 50%;
+}
+.btn-score-plus, .btn-score-minus {
+    margin: -2px;
+}
+
+.reset-button{
+  text-align: center;
+  margin-left: -55px;
+  margin-top: 10px;
+}

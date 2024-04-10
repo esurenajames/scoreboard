@@ -1,0 +1,60 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="volleyball.css">
+</head>
+<body>
+
+<div class="scoreboard">
+    <div class="grid-container">
+        <div class="houston">
+            <span class="playerNameText" id="team1NameText">BSIT</span>
+        </div>
+        <div class="set-item" id="team1Sets">
+            <span id="team1SetsValue">0</span>
+        </div>
+        <div class="grid-item" id="team1Points">
+            <span id="team1PointsValue">12</span>
+        </div>
+        <div class="dallas">
+            <span class="playerNameText" id="team2NameText">SE</span>
+        </div>
+        <div class="set-item" id="team2Sets">
+            <span id="team2SetsValue">0</span>
+        </div>
+        <div class="grid-item" id="team2Points">
+            <span id="team2PointsValue">12</span>
+        </div>
+    </div>
+</div>
+
+<script>
+function loadData() {
+    fetch('/volleyball_data.json')
+    .then(response => response.json())
+    .then(data => {
+        // Update team 1 data
+        document.getElementById('team1SetsValue').textContent = data.team1.sets;
+        document.getElementById('team1PointsValue').textContent = data.team1.points;
+        document.getElementById('team1NameText').textContent = data.team1.name;
+
+        // Update team 2 data
+        document.getElementById('team2SetsValue').textContent = data.team2.sets;
+        document.getElementById('team2PointsValue').textContent = data.team2.points;
+        document.getElementById('team2NameText').textContent = data.team2.name;
+    })
+    .catch(error => console.error('Error fetching volleyball data:', error));
+}
+
+// Load data when the page loads
+loadData();
+
+// Periodically check for updates
+setInterval(function() {
+    loadData();
+}, 1000); // Adjust the interval as needed
+</script>
+
+</body>
+</html>

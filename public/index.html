@@ -1,0 +1,501 @@
+  <!doctype html>
+    <html>
+    <head>
+        <meta charset="utf-8">
+        <link rel="stylesheet" href="style.css">
+    </head>
+    <body>
+        <div class="scoreboard">
+            <div class="team team-a houston">
+                <div class="team-logo">
+                    <label for="team1LogoInput">
+                        <img src="https://scontent.fmnl33-2.fna.fbcdn.net/v/t39.30808-6/364051658_686063156875839_1635619135948620956_n.jpg?_nc_cat=104&ccb=1-7&_nc_sid=5f2048&_nc_ohc=lvaHxJIWbuEAX-PS4MZ&_nc_ht=scontent.fmnl33-2.fna&oh=00_AfAOTLoNIQ_d9HQykM2FTX3CQqgHZL71uEM_TjPBiq5ejg&oe=6609FBE6" id="team1Logo" width="50px" height="50px" onclick="uploadLogo('team1LogoInput')"/>
+                    </label>
+                        <input type="file" id="team1LogoInput" name="team1Logo" style="display: none;" accept="image/*" onchange="changeLogo('team1', 'team1Logo', this)"/>
+                </div>
+                <div class="team-detail">
+                    <div class="team-nameandscore">
+                        <div class="team-name">
+                            <span class="playerNameText" id="team1NameText" contenteditable="true">SE</span>
+                        </div>
+                        <div class="team-score">
+                            <span class="playerScoreText" id="team1ScoreText"></span>
+                            <button class="btn-score-plus" onclick="incrementScore('team1', 1)">+</button>
+                            <button class="btn-score-minus" onclick="decrementScore('team1')">-</button>
+                        </div>
+                    </div>
+                    <div class="team-thisgame">
+                        <div class="team-times">
+                            TIMEOUTS: <span id="team1TimeoutText"></span>
+                            <button class="btn-timeout-plus" onclick="incrementTimeout('team1')">+</button>
+                            <button class="btn-timeout-minus" onclick="decrementTimeout('team1')">-</button>
+                        </div>
+                        <div class="team-bonus">
+                            FOULS: <span id="team1FoulText"></span>
+                            <button class="btn-foul-plus" onclick="incrementFoul('team1')">+</button>
+                            <button class="btn-foul-minus" onclick="decrementFoul('team1')">-</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="team team-b dallas">
+                <div class="team-logo">
+                    <label for="team2LogoInput">
+                        <img src="https://scontent.fmnl33-2.fna.fbcdn.net/v/t39.30808-6/358555330_719454330190187_2622051169809547277_n.jpg?_nc_cat=104&ccb=1-7&_nc_sid=5f2048&_nc_ohc=lDQV3hKLWzgAX_UcEwb&_nc_ht=scontent.fmnl33-2.fna&oh=00_AfBM7ZMs511PhdDWM7IzaXaoLJMZMPIlEd-8zSrWMmk0WQ&oe=660A8524" id="team2Logo" width="50px" height="50px" onclick="uploadLogo('team2LogoInput')"/>
+                    </label>
+                    <input type="file" id="team2LogoInput" name="team2Logo" style="display: none;" accept="image/*" onchange="changeLogo('team2', 'team2Logo', this)"/>
+                </div>
+                <div class="team-detail">
+                    <div class="team-nameandscore">
+                        <div class="team-name">
+                            <span class="playerNameText" id="team2NameText" contenteditable="true">BSIT</span>
+                        </div>
+                        <div class="team-score">
+                            <span class="playerScoreText" id="team2ScoreText"></span>
+                            <button class="btn-score-plus" onclick="incrementScore('team2', 1)">+</button>
+                            <button class="btn-score-minus" onclick="decrementScore('team2')">-</button>
+                        </div>
+                    </div>
+                    <div class="team-thisgame">
+                        <div class="team-times">
+                            TIMEOUTS: <span id="team2TimeoutText"></span>
+                            <button class="btn-timeout-plus" onclick="incrementTimeout('team2')">+</button>
+                            <button class="btn-timeout-minus" onclick="decrementTimeout('team2')">-</button>
+                        </div>
+                        <div class="team-bonus">
+                            FOULS: <span id="team2FoulText"></span>
+                            <button class="btn-foul-plus" onclick="incrementFoul('team2')">+</button>
+                            <button class="btn-foul-minus" onclick="decrementFoul('team2')">-</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="timer">
+                <div class="timer-container">
+                    <div class="quarter">
+                        <span id="quarterText">3rd</span>
+                        <!-- Plus and minus buttons for the quarter -->
+                        <button class="btn-quarter-plus" onclick="incrementQuarter()">+</button>
+                        <button class="btn-quarter-minus" onclick="decrementQuarter()">-</button>
+                    </div>
+                    <div class="gameclock">
+                        <span id="gameclockText" contenteditable="true" onkeypress="return onlyNumbers(event)">12:00</span>
+                        <button id="startStopButton" onclick="toggleClock()">Start/Stop</button>
+                        <button onclick="resetGameClock()">Reset</button>
+                    </div>
+                    <div class="shotclock">
+                        <span id="shotclockText">24</span>
+                    </div>
+                </div> 
+            </div>
+            <div class="logo">
+                <img src="logo.jpg"/>
+            </div>
+        </div>
+        <div>
+            <div class="reset-button">
+                <button onclick="resetGame()">Reset Game</button>
+            </div>
+        </div>
+    <script>
+        
+        function onlyNumbers(event) {
+            const key = event.key;
+            const gameclockElement = document.getElementById('gameclockText');
+            const currentTime = gameclockElement.textContent;
+            const [inputMinutes, inputSeconds] = currentTime.split(':').map(val => parseInt(val));
+            let totalSeconds = inputMinutes * 60 + inputSeconds;
+            
+            // Allow numbers, backspace, delete, arrow keys, and colon (for time format)
+            if (!/[0-9\b\t\:\r]/.test(key)) {
+                event.preventDefault();
+                return false;
+            }
+
+            // Get the new time if a number key is pressed
+            if (/[0-9]/.test(key)) {
+                const newTime = currentTime + key;
+                const [newMinutes, newSeconds] = newTime.split(':').map(val => parseInt(val));
+                const newTotalSeconds = newMinutes * 60 + newSeconds;
+                // Prevent input if the new time exceeds 12:00
+                if (newTotalSeconds > 720) {
+                    event.preventDefault();
+                    return false;
+                }
+            }
+        }
+
+        let gameClockInterval;
+
+        function startGameClock() {
+            gameClockInterval = setInterval(updateGameClock, 1000); // Update clock every second
+        }
+
+        function stopGameClock() {
+            clearInterval(gameClockInterval); // Stop the clock
+        }
+
+        function toggleClock() {
+            const startStopButton = document.getElementById('startStopButton');
+            if (startStopButton.textContent === 'Start') {
+                startStopButton.textContent = 'Stop';
+                startGameClock();
+            } else {
+                startStopButton.textContent = 'Start';
+                stopGameClock();
+            }
+        }
+
+        function updateGameClock() {
+            const gameclockElement = document.getElementById('gameclockText');
+            const currentTime = gameclockElement.textContent;
+            const [inputMinutes, inputSeconds] = currentTime.split(':').map(val => parseInt(val));
+            let totalSeconds = inputMinutes * 60 + inputSeconds;
+
+            if (totalSeconds <= 0) {
+                stopGameClock(); // Stop the clock when time reaches zero
+            } else {
+                totalSeconds--; // Decrease time by one second
+                const minutes = Math.floor(totalSeconds / 60);
+                const seconds = totalSeconds % 60;
+                const formattedTime = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                gameclockElement.textContent = formattedTime;
+                
+                // Update game clock time in JSON data
+                fetch('/scoreboard_data.json')
+                .then(response => response.json())
+                .then(scoreboardData => {
+                    scoreboardData.gameClock = formattedTime;
+                    saveDataToFile(scoreboardData); // Save updated data to JSON file
+                })
+                .catch(error => console.error('Error fetching scoreboard data:', error));
+            }
+        }
+
+        function resetGameClock() {
+            stopGameClock(); // Stop the clock if running
+            const gameclockElement = document.getElementById('gameclockText');
+            gameclockElement.textContent = '12:00'; // Reset time to '12:00'
+
+            // Update game clock time in JSON data
+            fetch('/scoreboard_data.json')
+            .then(response => response.json())
+            .then(scoreboardData => {
+                scoreboardData.gameClock = '12:00'; // Set game clock time to '12:00'
+                saveDataToFile(scoreboardData); // Save updated data to JSON file
+            })
+            .catch(error => console.error('Error fetching scoreboard data:', error));
+        }
+
+        document.getElementById('team1NameText').addEventListener('input', function(event) {
+            changeTeamName('team1', event.target.innerText);
+        });
+
+        document.getElementById('team2NameText').addEventListener('input', function(event) {
+            changeTeamName('team2', event.target.innerText);
+        });
+
+
+        function sendMessage(message) {
+            // Send message to the scoreboard.html
+            window.parent.postMessage(message, '*');
+        }
+
+        function updateScoreboard(scoreboardData) {
+        // Update scoreboard based on scoreboardData
+        document.getElementById('team1NameText').textContent = scoreboardData.team1.name;
+        document.getElementById('team1TimeoutText').textContent = scoreboardData.team1.timeouts;
+        document.getElementById('team1FoulText').textContent = scoreboardData.team1.fouls;
+        document.getElementById('team1ScoreText').textContent = scoreboardData.team1.score;
+        document.getElementById('team2NameText').textContent = scoreboardData.team2.name;
+        document.getElementById('team2TimeoutText').textContent = scoreboardData.team2.timeouts;
+        document.getElementById('team2FoulText').textContent = scoreboardData.team2.fouls;
+        document.getElementById('team2ScoreText').textContent = scoreboardData.team2.score;
+
+        // Update quarter text based on the quarter value
+        let quarterText;
+        switch(scoreboardData.quarter) {
+            case 1:
+                quarterText = '1st';
+                break;
+            case 2:
+                quarterText = '2nd';
+                break;
+            case 3:
+                quarterText = '3rd';
+                break;
+            case 4:
+                quarterText = '4th';
+                break;
+            default:
+                quarterText = 'OT' + (scoreboardData.quarter - 4);
+                break;
+        }
+        document.getElementById('quarterText').textContent = quarterText;
+        
+        }
+
+        function changeTeamName(team, newName) {
+            fetch('/scoreboard_data.json')
+                .then(response => response.json())
+                .then(scoreboardData => {
+                    scoreboardData[team].name = newName; // Update team name
+                    saveDataToFile(scoreboardData); // Save updated data to JSON file
+                })
+                .catch(error => console.error('Error fetching scoreboard data:', error));
+        }
+
+        function changeLogo(team, imgId, input) {
+            const file = input.files[0];
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const imageData = e.target.result;
+                console.log("ImageData:", imageData); // Log the image data to check if it's correct
+
+                // Update the team logo on the HTML page
+                document.getElementById(imgId).src = imageData;
+
+                // Fetch the current scoreboard data
+                fetch('/scoreboard_data.json')
+                    .then(response => response.json())
+                    .then(scoreboardData => {
+                        // Update the scoreboard data with the new image data
+                        scoreboardData[team].logo = imageData;
+
+                        // Save the updated scoreboard data
+                        saveDataToFile(scoreboardData);
+                    })
+                    .catch(error => console.error('Error fetching or updating scoreboard data:', error));
+            };
+            reader.readAsDataURL(file);
+        }
+            
+        function saveDataToFile(data) {
+            fetch('/scoreboard', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to update scoreboard data');
+                }
+                console.log('Scoreboard data updated successfully');
+            })
+            .catch(error => {
+                console.error('Error updating scoreboard data:', error);
+            });
+
+            // Also, send the logo data separately
+            fetch('/save_image', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ imageData: data.team1.logo, team: 'team1' })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to save logo data');
+                }
+                console.log('Logo data saved successfully');
+            })
+            .catch(error => {
+                console.error('Error saving logo data:', error);
+            });
+        }
+
+        function incrementTimeout(team) {
+            fetch('/scoreboard_data.json')
+            .then(response => response.json())
+            .then(scoreboardData => {
+                scoreboardData[team].timeouts++;
+                sendMessage({ type: 'timeout', team: team, value: scoreboardData[team].timeouts });
+                updateScoreboard(scoreboardData);
+                saveDataToFile(scoreboardData); // Save data to JSON file
+            })
+            .catch(error => console.error('Error fetching scoreboard data:', error));
+        }
+
+        function decrementTimeout(team) {
+            fetch('/scoreboard_data.json')
+            .then(response => response.json())
+            .then(scoreboardData => {
+                if (scoreboardData[team].timeouts > 0) {
+                    scoreboardData[team].timeouts--;
+                    sendMessage({ type: 'timeout', team: team, value: scoreboardData[team].timeouts });
+                    updateScoreboard(scoreboardData);
+                    saveDataToFile(scoreboardData); // Save data to JSON file
+                }
+            })
+            .catch(error => console.error('Error fetching scoreboard data:', error));
+        }
+
+        function incrementFoul(team) {
+            fetch('/scoreboard_data.json')
+            .then(response => response.json())
+            .then(scoreboardData => {
+                scoreboardData[team].fouls++;
+                sendMessage({ type: 'foul', team: team, value: scoreboardData[team].fouls });
+                updateScoreboard(scoreboardData);
+                saveDataToFile(scoreboardData); // Save data to JSON file
+            })
+            .catch(error => console.error('Error fetching scoreboard data:', error));
+        }
+
+        function decrementFoul(team) {
+            fetch('/scoreboard_data.json')
+            .then(response => response.json())
+            .then(scoreboardData => {
+                if (scoreboardData[team].fouls > 0) {
+                    scoreboardData[team].fouls--;
+                    sendMessage({ type: 'foul', team: team, value: scoreboardData[team].fouls });
+                    updateScoreboard(scoreboardData);
+                    saveDataToFile(scoreboardData); // Save data to JSON file
+                }
+            })
+            .catch(error => console.error('Error fetching scoreboard data:', error));
+        }
+
+        function incrementScore(team, points) {
+            fetch('/scoreboard_data.json')
+            .then(response => response.json())
+            .then(scoreboardData => {
+                scoreboardData[team].score += points;
+                sendMessage({ type: 'score', team: team, value: scoreboardData[team].score });
+                updateScoreboard(scoreboardData);
+                saveDataToFile(scoreboardData); // Save data to JSON file
+            })
+            .catch(error => console.error('Error fetching scoreboard data:', error));
+        }
+
+        function decrementScore(team) {
+            fetch('/scoreboard_data.json')
+            .then(response => response.json())
+            .then(scoreboardData => {
+                if (scoreboardData[team].score > 0) {
+                    scoreboardData[team].score--;
+                    sendMessage({ type: 'score', team: team, value: scoreboardData[team].score });
+                    updateScoreboard(scoreboardData);
+                    saveDataToFile(scoreboardData); // Save data to JSON file
+                }
+            })
+            .catch(error => console.error('Error fetching scoreboard data:', error));
+        }
+
+        function incrementQuarter() {
+            fetch('/scoreboard_data.json')
+            .then(response => response.json())
+            .then(scoreboardData => {
+                let currentQuarter = parseInt(scoreboardData.quarter) || 0;
+                currentQuarter++;
+                scoreboardData.quarter = currentQuarter;
+                saveDataToFile(scoreboardData); // Save quarter data
+                document.getElementById('quarterText').textContent = getQuarterText(currentQuarter); // Update quarter text immediately
+            })
+            .catch(error => console.error('Error fetching scoreboard data:', error));
+        }
+
+        function decrementQuarter() {
+            fetch('/scoreboard_data.json')
+            .then(response => response.json())
+            .then(scoreboardData => {
+                let currentQuarter = parseInt(scoreboardData.quarter) || 1;
+                if (currentQuarter > 1) {
+                    currentQuarter--;
+                    scoreboardData.quarter = currentQuarter;
+                    saveDataToFile(scoreboardData); // Save quarter data
+                    document.getElementById('quarterText').textContent = getQuarterText(currentQuarter); // Update quarter text immediately
+                }
+            })
+            .catch(error => console.error('Error fetching scoreboard data:', error));
+        }
+
+        function getQuarterText(quarter) {
+            switch(quarter) {
+                case 1:
+                    return '1st';
+                case 2:
+                    return '2nd';
+                case 3:
+                    return '3rd';
+                case 4:
+                    return '4th';
+                default:
+                    return 'OT' + (quarter - 4);
+            }
+        }
+
+        function saveDataToFile(data) {
+            fetch('/scoreboard', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to update scoreboard data');
+                }
+                console.log('Scoreboard data updated successfully');
+            })
+            .catch(error => {
+                console.error('Error updating scoreboard data:', error);
+            });
+        }
+
+        function resetGame() {
+            const resetData = {
+                team1: { name: 'NA', timeouts: 7, fouls: 0, score: 0 },
+                team2: { name: 'NA', timeouts: 7, fouls: 0, score: 0 },
+                quarter: 1
+            };
+
+            fetch('/scoreboard', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(resetData)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to reset scoreboard data');
+                }
+                console.log('Scoreboard data reset successfully');
+                // Reload the scoreboard data after reset
+                loadData();
+            })
+            .catch(error => {
+                console.error('Error resetting scoreboard data:', error);
+            });
+        }
+
+        function loadData() {
+        fetch('/scoreboard_data.json')
+            .then(response => response.json())
+            .then(scoreboardData => {
+                updateScoreboard(scoreboardData);
+                const gameclockElement = document.getElementById('gameclockText');
+                if (scoreboardData.gameClock) {
+                    gameclockElement.textContent = scoreboardData.gameClock;
+                } else {
+                    gameclockElement.textContent = '12:00'; // Default initial time
+                }
+                startGameClock(); // Start the game clock
+                
+                // Update team logos
+                document.getElementById('team1Logo').src = scoreboardData.team1.logo;
+                document.getElementById('team2Logo').src = scoreboardData.team2.logo;
+            })
+            .catch(error => console.error('Error fetching scoreboard data:', error));
+        }
+
+        loadData();
+
+    </script>
+    </body>
+    </html>
