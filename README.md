@@ -26,7 +26,9 @@ Usage:
 
 Instructions:
 
+    Download the node.js at https://nodejs.org/en/download/
     Clone the repository to your local machine.
+    In your visual studio code
     Navigate to the project directory.
     Run npm install to install dependencies.
     Run npm start to start the server.
