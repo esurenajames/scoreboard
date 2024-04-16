@@ -8,6 +8,12 @@
 
 <div class="scoreboard">
     <div class="grid-container">
+        <div class="team1-logo">
+            <label for="team1LogoInput">
+                <img id="team1Logo" src="" width="50px" height="50px" onclick="uploadLogo('team1LogoInput')"/>
+            </label>
+            <input type="file" id="team1LogoInput" name="team1Logo" style="display: none;" accept="image/*" onchange="changeLogo('team1', 'team1Logo', this)"/>
+        </div>        
         <div class="houston">
             <span class="playerNameText" id="team1NameText" contenteditable="true" onblur="updateTeamName('team1', this.innerText)">BSIT</span>
         </div>
@@ -19,12 +25,21 @@
             </div>
         </div>
         <div class="grid-item" id="team1Points">
-            <span id="team1PointsValue">12</span>
+            <div class="score-container">
+                <span id="team1PointsValue">12</span>
+                <span class="volleyball-icon-placeholder"></span>
+            </div>
             <div class="points-buttons">
                 <button onclick="increaseScore('team1', 1)">+</button>
                 <button onclick="decreaseScore('team1')">-</button>
             </div>
         </div>
+        <div class="team2-logo">
+            <label for="team2LogoInput">
+                <img id="team2Logo" src="" width="50px" height="50px" onclick="uploadLogo('team2LogoInput')"/>
+            </label>
+            <input type="file" id="team2LogoInput" name="team2Logo" style="display: none;" accept="image/*" onchange="changeLogo('team2', 'team2Logo', this)"/>
+        </div>        
         <div class="dallas">
             <span class="playerNameText" id="team2NameText" contenteditable="true" onblur="updateTeamName('team2', this.innerText)">SE</span>
         </div>
@@ -36,7 +51,10 @@
             </div>
         </div>
         <div class="grid-item" id="team2Points">
-            <span id="team2PointsValue">12</span>
+            <div class="score-container">
+                <span id="team2PointsValue">12</span>
+                <span class="volleyball-icon-placeholder"></span>
+            </div>
             <div class="points-buttons">
                 <button onclick="increaseScore('team2', 1)">+</button>
                 <button onclick="decreaseScore('team2')">-</button>
@@ -49,7 +67,8 @@
 </div>
 
 <script>
-function updateScoreboard(scoreboardData) {
+    
+    function updateScoreboard(scoreboardData) {
     // Update team names
     document.querySelector('.houston > .playerNameText').innerText = scoreboardData.team1.name || 'none';
     document.querySelector('.dallas > .playerNameText').innerText = scoreboardData.team2.name || 'none';
@@ -59,7 +78,12 @@ function updateScoreboard(scoreboardData) {
     document.getElementById('team2PointsValue').innerText = scoreboardData.team2.points;
     document.getElementById('team1SetsValue').innerText = scoreboardData.team1.sets;
     document.getElementById('team2SetsValue').innerText = scoreboardData.team2.sets;
+
+    // Update logos
+    document.getElementById('team1Logo').src = scoreboardData.team1.logo || '/uploads/SET.png';
+    document.getElementById('team2Logo').src = scoreboardData.team2.logo || '/uploads/SAS.png';
 }
+
 
 function updateTeamName(team, newName) {
     fetch('/volleyball_data.json')
@@ -105,13 +129,48 @@ function decreaseSets(team) {
     }
 }
 
+let lastClickedTeam = null; // Variable to store the last team clicked
+
 function increaseScore(team, points) {
     const pointsElement = document.getElementById(`${team}PointsValue`);
     let pointsValue = parseInt(pointsElement.innerText);
     pointsValue += points;
     pointsElement.innerText = pointsValue;
+
+    // Remove icon from the previous team if there was one
+    if (lastClickedTeam && lastClickedTeam !== team) {
+        const existingIcon = document.querySelector(`#${lastClickedTeam}Points .volleyball-icon`);
+        if (existingIcon) {
+            existingIcon.remove();
+        }
+    }
+
+    // Check if there is already an icon
+    const existingIcon = document.querySelector(`#${team}Points .volleyball-icon`);
+    if (existingIcon) {
+        existingIcon.remove(); // Remove existing icon
+    }
+
+    // Append volleyball icon
+    appendVolleyballIcon(pointsElement);
+
+    // Update the last clicked team
+    lastClickedTeam = team;
+
     saveDataToFile({ team: team, points: pointsValue });
 }
+
+
+function appendVolleyballIcon(element) {
+    const icon = document.createElement('img');
+    icon.src = 'volleyball-icon.png'; // Replace with the path to your volleyball icon image
+    icon.alt = 'Volleyball Icon';
+    icon.width = 20;
+    icon.height = 20;
+    icon.classList.add('volleyball-icon'); // Add a class to identify the icon
+    element.nextElementSibling.appendChild(icon); // Append the icon to the next sibling (placeholder)
+}
+
 
 function decreaseScore(team) {
     const pointsElement = document.getElementById(`${team}PointsValue`);
@@ -124,13 +183,14 @@ function decreaseScore(team) {
 }
 
 function saveDataToFile(data) {
+    // Update the scoreboard data
     fetch('/volleyball_data.json')
         .then(response => response.json())
         .then(scoreboardData => {
             if (data.team === 'team1') {
-                scoreboardData.team1[data.points !== undefined ? 'points' : 'sets'] = data.points !== undefined ? data.points : data.sets;
+                scoreboardData.team1[data.points !== undefined ? 'points' : (data.sets !== undefined ? 'sets' : 'logo')] = data.points !== undefined ? data.points : (data.sets !== undefined ? data.sets : data.logo);
             } else if (data.team === 'team2') {
-                scoreboardData.team2[data.points !== undefined ? 'points' : 'sets'] = data.points !== undefined ? data.points : data.sets;
+                scoreboardData.team2[data.points !== undefined ? 'points' : (data.sets !== undefined ? 'sets' : 'logo')] = data.points !== undefined ? data.points : (data.sets !== undefined ? data.sets : data.logo);
             }
             fetch('/volleyball_data', {
                 method: 'PUT',
@@ -175,6 +235,26 @@ function resetScores() {
     .catch(error => {
         console.error('Error resetting volleyball scoreboard data:', error);
     });
+}
+
+function uploadLogo(inputId) {
+    document.getElementById(inputId).click();
+}
+
+function changeLogo(team, imgId, input) {
+    const file = input.files[0];
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const imageData = e.target.result;
+        console.log("ImageData:", imageData); // Log the image data to check if it's correct
+
+        // Update the team logo on the HTML page
+        document.getElementById(imgId).src = imageData;
+
+        // Save the updated logo data
+        saveDataToFile({ team: team, logo: imageData });
+    };
+    reader.readAsDataURL(file);
 }
 
 function loadData() {

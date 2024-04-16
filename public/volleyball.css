@@ -7,12 +7,34 @@ body {
 
 .grid-container {
   display: grid;
-  grid-template-columns: auto auto auto;
-  width: 280px;
+  grid-template-columns: auto auto auto auto;
+  width: 380px;
   border-top: 1px solid white;
   border-left: 1px solid white;
   border-bottom: 1px solid white; 
   border-right: 1px solid white; 
+}
+
+.grid-item {
+  background-color: #222222;
+  border: .5px solid rgba(0, 0, 0, 0.2);
+  padding: 10px;
+  text-align: center;
+  box-shadow: inset 0px 0px 5px rgba(0,0,0,0.5);
+  color: #ffffff;
+  display: flex;
+  flex-direction: column; /* Stack items vertically */
+  align-items: center; /* Center items horizontally */
+}
+
+
+.team1-logo {
+  background-color: crimson;
+}
+
+
+.team2-logo {
+  background-color: steelblue; 
 }
 
 .grid-item {
@@ -53,7 +75,6 @@ body {
 
 .houston {
   background-color: crimson;
-  border: .5px solid rgba(0, 0, 0, 0.2);
   padding: 10px;
   text-align: center;
 	font-weight: 500;
@@ -63,7 +84,6 @@ body {
 
 .dallas {
   background-color: steelblue; 
-  border: .5px solid rgba(0, 0, 0, 0.2);
   padding: 10px;
   text-align: center;
 	font-weight: 500;

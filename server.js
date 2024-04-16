@@ -58,6 +58,7 @@ app.put('/scoreboard', (req, res) => {
 });
 
 // API endpoint to save uploaded image to the uploads folder
+// API endpoint to save uploaded image to the uploads folder
 app.post('/save_image', (req, res) => {
     const { imageData, team } = req.body;
     const base64Data = imageData.replace(/^data:image\/png;base64,/, ''); // Remove header
@@ -66,14 +67,14 @@ app.post('/save_image', (req, res) => {
     // Save the image to file
     fs.writeFile(imagePath, base64Data, 'base64', (err) => {
         if (err) {
-            console.error('Error saving image:', err);
-            res.status(500).send('Error saving image');
-        } else {
-            console.log('Image saved successfully');
-            res.status(200).send('Image saved successfully');
+            console.error('Error saving image:', err); // Log detailed error message
+            return res.status(500).json({ error: 'Error saving image' }); // Send error response
         }
+        console.log('Image saved successfully');
+        res.status(200).json({ message: 'Image saved successfully' }); // Send success response
     });
 });
+
 
 // Start the server
 app.listen(port, () => {
