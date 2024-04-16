@@ -58,14 +58,26 @@ function loadData() {
         document.getElementById('team1SetsValue').textContent = data.team1.sets;
         document.getElementById('team1PointsValue').textContent = data.team1.points;
         document.getElementById('team1NameText').textContent = data.team1.name;
+        document.getElementById('team1Logo').src = data.team1.logo || '/uploads/SET.png';
 
         // Update team 2 data
         document.getElementById('team2SetsValue').textContent = data.team2.sets;
         document.getElementById('team2PointsValue').textContent = data.team2.points;
         document.getElementById('team2NameText').textContent = data.team2.name;
-
-        document.getElementById('team1Logo').src = data.team1.logo || '/uploads/SET.png';
         document.getElementById('team2Logo').src = data.team2.logo || '/uploads/SAS.png';
+
+        // Display volleyball icon based on hasBall property
+        if (data.team1.hasBall) {
+            document.querySelector('#team1Points').innerHTML += '<img src="volleyball-icon.png" alt="Volleyball Icon" width="20" height="20" class="volleyball-icon">';
+            document.querySelector('#team2Points').innerHTML = document.querySelector('#team2Points').innerHTML.replace('<img src="volleyball-icon.png" alt="Volleyball Icon" width="20" height="20" class="volleyball-icon">', ''); // Remove icon from the other team
+        } else if (data.team2.hasBall) {
+            document.querySelector('#team2Points').innerHTML += '<img src="volleyball-icon.png" alt="Volleyball Icon" width="20" height="20" class="volleyball-icon">';
+            document.querySelector('#team1Points').innerHTML = document.querySelector('#team1Points').innerHTML.replace('<img src="volleyball-icon.png" alt="Volleyball Icon" width="20" height="20" class="volleyball-icon">', ''); // Remove icon from the other team
+        } else {
+            // Remove icons if neither team has the ball
+            document.querySelector('#team1Points').innerHTML = document.querySelector('#team1Points').innerHTML.replace('<img src="volleyball-icon.png" alt="Volleyball Icon" width="20" height="20" class="volleyball-icon">', '');
+            document.querySelector('#team2Points').innerHTML = document.querySelector('#team2Points').innerHTML.replace('<img src="volleyball-icon.png" alt="Volleyball Icon" width="20" height="20" class="volleyball-icon">', '');
+        }
     })
     .catch(error => console.error('Error fetching volleyball data:', error));
 }
