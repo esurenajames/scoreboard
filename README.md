@@ -37,11 +37,11 @@ Instructions:
 
 Basketball:
 ![image](https://github.com/esurenajames/scoreboard/assets/152574530/9caeffdd-57ac-4a9f-8678-e4cfc9442ada)
-![image](https://github.com/esurenajames/scoreboard/assets/152574530/db26fcc4-43d7-4fb2-b4d0-16d8a4a81ff7)
+![image](https://github.com/esurenajames/scoreboard/assets/84180003/3b44da57-59e1-44ef-b613-2eaf640e23f3)
 
 Volleyball
 ![image](https://github.com/esurenajames/scoreboard/assets/152574530/ab592de1-e2c1-4c4b-9c60-0e9f6aa04f67)
-![image](https://github.com/esurenajames/scoreboard/assets/152574530/eae290a3-8a7a-4816-9aef-3a246f232a84)
+![image](https://github.com/esurenajames/scoreboard/assets/84180003/4863b2c5-a59b-4225-b86a-aa93f93a3ec0)
 
 Feel free to contribute to this project by submitting pull requests or opening issues for feature requests and bug reports.
 
